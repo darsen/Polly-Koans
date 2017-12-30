@@ -6,10 +6,12 @@ using System.Net.Http;
 using System.Net;
 using System.Threading;
 using Polly.Timeout;
+using RestSharp;
+using System.Threading.Tasks;
 
 namespace PollyKoans
 {
-    public class PollyKoan
+    public class Timeout_Cancel_Retry
     {
         [Test]
         public void Handle_and_Retry()
@@ -20,7 +22,7 @@ namespace PollyKoans
                 .Handle<DivideByZeroException>()
                 .Retry(1)
                 .Execute(() => 8 / count++);
-                Assert.That(count, Is_.EqualTo_(2));
+            Assert.That(count, Is_.EqualTo_(2));
         }
 
         [Test]
@@ -35,7 +37,7 @@ namespace PollyKoans
                 });
             try
             {
-                policy.Execute(() => 8 / new int[]{0}.First());
+                policy.Execute(() => 8 / new int[] { 0 }.First());
             }
             catch
             {
@@ -56,7 +58,7 @@ namespace PollyKoans
         }
 
         [Test]
-        public void Timeout() {
+        public void Pessimistic_Timeout() {
             var result = "not timed out";
             var policy = Policy
             .Timeout(TimeSpan.FromMilliseconds(Fill.__in + 1000), TimeoutStrategy.Pessimistic);
@@ -69,6 +71,37 @@ namespace PollyKoans
             }
             Assert.That(result, Is_.EqualTo_("timed out"));
         }
-   
+
+        [Test]
+        public async Task Timeout_Asynch_Optimistic_With_Token() {
+            var httpClient = new HttpClient();
+            var cancellationTokenSource = new CancellationTokenSource();
+            var timeoutPolicy = Policy.TimeoutAsync(500, TimeoutStrategy.Optimistic);            
+            var whatHappened = "";
+            cancellationTokenSource.CancelAfter(Fill.__in + 1000);
+            try
+            {
+                var httpResponse = await timeoutPolicy
+                    .ExecuteAsync(async ct =>
+                    {
+                        HttpResponseMessage httpResponseMessage = await httpClient.GetAsync("http://tempuri.org", ct);
+                        Thread.Sleep(100);
+                        return httpResponseMessage;
+                    }, cancellationTokenSource.Token);
+            }
+            catch (OperationCanceledException) {
+                whatHappened = "cancelled";
+            }
+            catch (TimeoutException)
+            {
+                whatHappened = "timeout";
+            }
+            catch(Exception e) {
+                var y = e.InnerException;
+                whatHappened = "unexpected";
+            }
+            Assert.That(whatHappened, Is_.EqualTo_("cancelled"));
+        }
+
     }
 }
