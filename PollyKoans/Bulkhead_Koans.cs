@@ -1,21 +1,25 @@
-﻿using NUnit.Framework;
-using Polly;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using NUnit.Framework;
+using Polly;
+using Polly.Bulkhead;
+using PollyKoans.Framework;
 
 namespace PollyKoans
 {
-    public class BulkheadKoans
+    public class Bulkhead_Koans
     {
         [Test]
-        public void Bulkhead_Queing_And_Parallel_Execution() {
+        public void Bulkhead_Queing_And_Parallel_Execution()
+        {
             var maximumNumberOfActionsInParallel = 0;
             var minumumNumberOfSlotsAvailableInQueue = 10;
             var parallelActionCount = 0;
-            var policy = Policy.Bulkhead(maxParallelization: 4, maxQueuingActions: 8);
-            Parallel.ForEach(Enumerable.Range(0, 9), (p)=> {
+            var policy = Policy.Bulkhead(4, 8);
+            Parallel.ForEach(Enumerable.Range(0, 9), p =>
+            {
                 policy.Execute(() =>
                     {
                         parallelActionCount++;
@@ -26,37 +30,33 @@ namespace PollyKoans
                         Thread.Sleep(100);
                         parallelActionCount--;
                     }
-                 );
+                );
             });
-            Assert.That(Fill.__in, Is_.EqualTo_(maximumNumberOfActionsInParallel + minumumNumberOfSlotsAvailableInQueue));
+            Assert.That(FILL.__IN,
+                Is_.Equal_To(maximumNumberOfActionsInParallel + minumumNumberOfSlotsAvailableInQueue));
         }
 
         [Test]
         public void Bulkhead_Queue_Full()
         {
             var exceptionCount = 0;
-            var policy = Policy.Bulkhead(maxParallelization: 4, maxQueuingActions: 2);
+            var policy = Policy.Bulkhead(4, 2);
             try
             {
-                Parallel.ForEach(Enumerable.Range(0, 9), (p) =>
+                Parallel.ForEach(Enumerable.Range(0, 9), p =>
                 {
-                    policy.Execute(() =>
-                        {
-                            Thread.Sleep(100);
-                        }
+                    policy.Execute(() => { Thread.Sleep(100); }
                     );
                 });
             }
-            catch (AggregateException ae) {
+            catch (AggregateException ae)
+            {
                 foreach (var ex in ae.InnerExceptions)
-                {
-                    if (ex is Polly.Bulkhead.BulkheadRejectedException)
+                    if (ex is BulkheadRejectedException)
                         exceptionCount++;
-                }
             }
-            Assert.That(Fill._in, Is_.EqualTo_(exceptionCount));
+
+            Assert.That(FILL._IN, Is_.Equal_To(exceptionCount));
         }
-
     }
-
 }

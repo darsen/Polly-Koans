@@ -67,10 +67,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BulkheadKoans.cs" />
-    <Compile Include="EnlightedEqualTo.cs" />
-    <Compile Include="PollyKoan.cs" />
+    <Compile Include="Bulkhead_Koans.cs" />
+    <Compile Include="Framework\EnlightedEqualTo.cs" />
+    <Compile Include="Policy_Wrap_Koans.cs" />
+    <Compile Include="_1_Retry_Koans.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="_2_Timeout_Koans.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">
