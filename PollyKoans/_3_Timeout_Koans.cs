@@ -9,7 +9,7 @@ using PollyKoans.Framework;
 
 namespace PollyKoans
 {
-    public class _2_Timeout_Koans
+    public class _3_Timeout_Koans
     {
         [Test]
         public void Pessimistic_Timeout()
