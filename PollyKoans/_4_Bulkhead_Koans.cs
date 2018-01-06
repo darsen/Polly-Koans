@@ -9,7 +9,7 @@ using PollyKoans.Framework;
 
 namespace PollyKoans
 {
-    public class Bulkhead_Koans
+    public class _4_Bulkhead_Koans
     {
         [Test]
         public void Bulkhead_Queing_And_Parallel_Execution()

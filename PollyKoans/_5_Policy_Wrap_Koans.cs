@@ -4,7 +4,7 @@ using Polly;
 
 namespace PollyKoans
 {
-    public class Policy_Wrap_Koans
+    public class _5_Policy_Wrap_Koans
     {
         [Test]
         public void Timeout_with_Retry()
