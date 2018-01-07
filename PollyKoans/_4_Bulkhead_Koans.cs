@@ -12,7 +12,7 @@ namespace PollyKoans
     public class _4_Bulkhead_Koans
     {
         [Test]
-        public void Bulkhead_Queing_And_Parallel_Execution()
+        public void Bulkhead_Queing_and_Parallel_Execution()
         {
             var maximumNumberOfActionsInParallel = 0;
             var minumumNumberOfSlotsAvailableInQueue = 10;
@@ -37,7 +37,7 @@ namespace PollyKoans
         }
 
         [Test]
-        public void Bulkhead_Queue_Full()
+        public void Bulkhead_when_Queue_is_Full()
         {
             var exceptionCount = 0;
             var policy = Policy.Bulkhead(4, 2);
@@ -45,7 +45,10 @@ namespace PollyKoans
             {
                 Parallel.ForEach(Enumerable.Range(0, 9), p =>
                 {
-                    policy.Execute(() => { Thread.Sleep(100); }
+                    policy.Execute(() => 
+                        {
+                            Thread.Sleep(100); 
+                        }
                     );
                 });
             }

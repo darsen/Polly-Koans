@@ -30,7 +30,7 @@ namespace PollyKoans
         }
 
         [Test]
-        public async Task Optimistic_Timeout_With_Cancellation_Token()
+        public async Task Optimistic_Timeout_with_Cancellation_Token()
         {
             var httpClient = new HttpClient();
             var cancellationTokenSource = new CancellationTokenSource();
