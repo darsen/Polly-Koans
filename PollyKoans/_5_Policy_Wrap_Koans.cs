@@ -1,23 +1,34 @@
 ﻿using System;
 using NUnit.Framework;
 using Polly;
+using PollyKoans.Framework;
 
 namespace PollyKoans
 {
     public class _5_Policy_Wrap_Koans
     {
         [Test]
-        public void Timeout_with_Retry()
+        public void Retry_inside_Timeout()
         {
-            //var timeout = Policy.Timeout(TimeSpan.FromMilliseconds(100));
-            //var retry = Policy.Handle<Exception>()
-            //    .Retry(2);
-            //var retryWithTimeout =
-            //    timeout.Wrap(
-            //        retry); // Wrap them in the other order if you want the timeout per call, not per overall strategy
-            //retryWithTimeout.Execute(cancellationToken => DoSomething(cancellationToken));
-
-            //timeout.Execute();
+            var count = 0;
+            var whatHappened = "";
+            var timeout = Policy.Timeout(TimeSpan.FromMilliseconds(5));
+            var retry = Policy.Handle<Exception>()
+                .WaitAndRetryForever(attempt => TimeSpan.FromMilliseconds(4));
+            var retryWithTimeout = timeout.Wrap(retry);
+            try
+            {
+                retryWithTimeout.Execute(() => 8 / count++);
+            }
+            catch (DivideByZeroException)
+            {
+                whatHappened = "exception";
+            }
+            catch (Polly.Timeout.TimeoutRejectedException)
+            {
+                whatHappened = "timed out";
+            }
+            Assert.That(whatHappened, Is_.Equal_To(FILL._IN));
         }
     }
 }
