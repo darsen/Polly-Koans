@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -43,12 +44,11 @@ namespace PollyKoans
             Assert.That(retries, Is_.Equal_To(4));
         }
 
-        //TODO: 
         [Test]
         public void Handle_Exception_and_Wait_before_Retry()
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
-            var count = 0;
+            var count = FILL.__IN + 6;
             Policy
                 .Handle<DivideByZeroException>()
                 .WaitAndRetry(
@@ -59,9 +59,9 @@ namespace PollyKoans
                     }
                 )
                 .Execute(() => 8 / count++);
-            var elapsed = stopwatch.ElapsedMilliseconds();
+            var elapsed = stopwatch.ElapsedMilliseconds;
 
-            Assert.That(count, Is_.Equal_To(2));
+            Assert.That(elapsed > 99, Is_.Equal_To(true));
         }
     }
 }
