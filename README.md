@@ -6,7 +6,9 @@ Use the standard NUnit test runner to run these koans.
 
 ## Troubleshooting
 
-### Project is targeting .Net framework 4.7 which is not installed
-Requires a .Net Framework 4.7.2 framework and Developer Pack Installation using Chocolatey: 
-choco install dotnet4.7.2 -y
-choco install netfx-4.7.2-devpack -y
+### .Net framework 4.7  is not installed
+Project requires a .Net Framework 4.7.2 and .Net Developer Pack 4.2.7. Installation using Chocolatey:
+
+`choco install dotnet4.7.2 -y`
+
+`choco install netfx-4.7.2-devpack -y`
